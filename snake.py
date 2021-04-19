@@ -1,4 +1,5 @@
-import pygame, sys, random
+import pygame, sys, random, os
+import pygame.freetype
 from pygame.locals import *
 
 
@@ -39,11 +40,22 @@ def collision_check(snake, food):
     else:
         return False
 
+def font_init():
+    font_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"fonts","Boxfont Round.ttf")
+    font_size = 64
+    pygame.freetype.init()
+    myfont = pygame.freetype.Font(font_path, font_size)
+    return myfont
+
+def display_score(surface, font, color, score):
+    str_score = str(score)
+    font.render_to(surface, (200, 200), str_score, color, None, size=64)
+
 def main():
     # window size
     WINDOW_WIDTH = 800
     WINDOW_HEIGHT = 600
-    WINDOW_SIZE = (window_width, window_height)
+    WINDOW_SIZE = (WINDOW_WIDTH, WINDOW_HEIGHT)
 
     # colors
     black = pygame.Color(0, 0, 0)
@@ -57,11 +69,13 @@ def main():
     pygame.display.set_caption('Snake Game')
     background = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     background.fill(orange)
+    font_obj = font_init()
 
     snake_1 = Snake(WINDOW_SIZE)
     food_1 = Food(WINDOW_SIZE)
 
-    while True: # main game loop
+    # main game loop
+    while True: 
         pygame.time.delay(100)
 
         for event in pygame.event.get():
@@ -93,7 +107,8 @@ def main():
         if collision:
             food_1.randomize()
 
-        background.fill(orange)   
+        background.fill(orange)  
+        display_score(background, font_obj, black, 50) 
         pygame.draw.rect(background, green, pygame.Rect(snake_1.pos_x, snake_1.pos_y, snake_1.block_size, snake_1.block_size)) 
         pygame.draw.rect(background, red, pygame.Rect(food_1.pos_x, food_1.pos_y, food_1.size, food_1.size))            
         pygame.display.update()
