@@ -49,7 +49,7 @@ def font_init():
 
 def display_score(surface, font, color, score):
     str_score = str(score)
-    font.render_to(surface, (200, 200), str_score, color, None, size=64)
+    font.render_to(surface, (600, 25), "Score: " + str_score, color, None, size=32)
 
 def main():
     # window size
@@ -73,6 +73,7 @@ def main():
 
     snake_1 = Snake(WINDOW_SIZE)
     food_1 = Food(WINDOW_SIZE)
+    score = 0
 
     # main game loop
     while True: 
@@ -106,9 +107,10 @@ def main():
         collision = collision_check(snake_1, food_1)
         if collision:
             food_1.randomize()
+            score += 1
 
         background.fill(orange)  
-        display_score(background, font_obj, black, 50) 
+        display_score(background, font_obj, black, score) 
         pygame.draw.rect(background, green, pygame.Rect(snake_1.pos_x, snake_1.pos_y, snake_1.block_size, snake_1.block_size)) 
         pygame.draw.rect(background, red, pygame.Rect(food_1.pos_x, food_1.pos_y, food_1.size, food_1.size))            
         pygame.display.update()
