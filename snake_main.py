@@ -1,13 +1,12 @@
-import pygame, sys, random, os
+import pygame, sys, os
 import pygame.freetype
 from pygame.locals import *
-from pygame.math import Vector2
 import colors
 import snake_class
 import food_class
 
 
-def collision_check(snake, food):
+def food_collide_check(snake, food):
     #if snake.pos_x == food.pos_x and snake.pos_y == food.pos_y: 
     if snake.body2[0] == food.vect_pos:
         return True
@@ -62,36 +61,33 @@ def main():
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    snake_1.direction = "up"
+                    snake_1.key_press = "up"
                 elif event.key == pygame.K_DOWN:
-                    snake_1.direction = "down"
+                    snake_1.key_press = "down"
                 elif event.key == pygame.K_LEFT:
-                    snake_1.direction = "left"
+                    snake_1.key_press = "left"
                 elif event.key == pygame.K_RIGHT:
-                    snake_1.direction = "right"            
+                    snake_1.key_press = "right"            
 
-        if snake_1.direction == "up":
-            snake_1.direction2 = [0,-20]
-        elif snake_1.direction == "down":
-            snake_1.direction2 = [0,20]
-        elif snake_1.direction == "left":
-            snake_1.direction2 = [-20,0]
-        elif snake_1.direction == "right":
-            snake_1.direction2 = [20,0]  
-
-        #snake_1.move()
+        if snake_1.key_press == "up":
+            snake_1.direction = [0,-20]
+        elif snake_1.key_press == "down":
+            snake_1.direction = [0,20]
+        elif snake_1.key_press == "left":
+            snake_1.direction = [-20,0]
+        elif snake_1.key_press == "right":
+            snake_1.direction = [20,0]  
 
         # situation check
-        collision = collision_check(snake_1, food_1)
-        if collision:
+        snake_1.tail_collide_check
+        if food_collide_check(snake_1, food_1):
+            snake_1.grow()
             food_1.randomize()
             score += 1
 
         background.fill(colors.orange)  
         display_score(background, font_obj, colors.black, score) 
         snake_1.draw()
-        #print(snake_1.body2[0])
-        #print(food_1.vect_pos)
         #food_1.draw()
         pygame.draw.rect(background, colors.red, pygame.Rect(food_1.pos_x, food_1.pos_y, food_1.size, food_1.size))            
         pygame.display.update()
