@@ -27,8 +27,35 @@ def display_time(surface, font, color, time):
     str_time = str(time)
     font.render_to(surface, (50,25), "Time: " + str_time, color, None, size=32)
 
-def display_game_over(surface, font, color):
-    pass
+def start_screen(surface, font):
+    start = True
+    while start:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    start = False
+        surface.fill(colors.purple)
+        font.render_to(surface, (150,100), "SNAKE GAME!!!", colors.black, None, size=75)
+        font.render_to(surface, (125,400), "Press space to start", colors.black, None, size=50)
+        pygame.display.update()
+
+def game_over(surface, font):
+    end = True
+    while end:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    pygame.quit()
+                    quit()
+        surface.fill(colors.orange)
+        font.render_to(surface, (150,100), "GAME OVER", colors.red, None, size=100)
+        pygame.display.update()
 
 def main():
     # window size
@@ -51,6 +78,8 @@ def main():
     pygame.time.set_timer(SCREEN_UPDATE, 150)
     seconds = 0
     start_tick = pygame.time.get_ticks()
+
+    start_screen(background, font_obj)
 
     # main game loop
     while True: 
@@ -84,14 +113,15 @@ def main():
             snake_1.direction = [20,0]  
 
         # situation check
-        snake_1.tail_collide_check()
+        if snake_1.tail_collide_check():
+            game_over(background, font_obj)
         if food_collide_check(snake_1, food_1):
             snake_1.grow()
             food_1.randomize()
             score += 1
 
         if score >= 5:
-            display_game_over(background, font_obj, colors.red)
+            game_over(background, font_obj)
 
         seconds = (pygame.time.get_ticks()-start_tick)/1000
         seconds = round(seconds)

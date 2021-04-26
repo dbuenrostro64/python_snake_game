@@ -44,4 +44,4 @@ class Snake:
     def tail_collide_check(self):
         for block in self.body[1:]:
             if block == self.body[0]:
-                print("hello")
+                return True
