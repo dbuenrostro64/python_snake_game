@@ -4,8 +4,8 @@ import colors
 class Scene:
     def __init__(self, screen):
         self._screen = screen
-        self._background = pygame.Surface(self.screen.get_size())
-        self._background.fill(rgbcolors.purple)
+        self._background = pygame.Surface(self._screen.get_size())
+        self._background.fill(colors.purple)
         self._is_valid = True
 
     def draw(self):

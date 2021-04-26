@@ -7,8 +7,7 @@ import food_class
 
 
 def food_collide_check(snake, food):
-    #if snake.pos_x == food.pos_x and snake.pos_y == food.pos_y: 
-    if snake.body2[0] == food.vect_pos:
+    if snake.body[0] == food.vect_pos:
         return True
     else:
         return False
@@ -23,6 +22,10 @@ def font_init():
 def display_score(surface, font, color, score):
     str_score = str(score)
     font.render_to(surface, (600, 25), "Score: " + str_score, color, None, size=32)
+
+def display_time(surface, font, color, time):
+    str_time = str(time)
+    font.render_to(surface, (50,25), "Time: " + str_time, color, None, size=32)
 
 def display_game_over(surface, font, color):
     pass
@@ -41,11 +44,13 @@ def main():
     font_obj = font_init()
 
     snake_1 = snake_class.Snake(WINDOW_SIZE, background)
-    food_1 = food_class.Food(WINDOW_SIZE)
+    food_1 = food_class.Food(WINDOW_SIZE, background)
     score = 0
 
     SCREEN_UPDATE = pygame.USEREVENT
     pygame.time.set_timer(SCREEN_UPDATE, 150)
+    seconds = 0
+    start_tick = pygame.time.get_ticks()
 
     # main game loop
     while True: 
@@ -60,18 +65,18 @@ def main():
                 snake_1.move()
 
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP and snake_1.key_press != "down":
                     snake_1.key_press = "up"
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN and snake_1.key_press != "up":
                     snake_1.key_press = "down"
-                elif event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_LEFT and snake_1.key_press != "right":
                     snake_1.key_press = "left"
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT and snake_1.key_press != "left":
                     snake_1.key_press = "right"            
 
-        if snake_1.key_press == "up":
+        if snake_1.key_press == "up": 
             snake_1.direction = [0,-20]
-        elif snake_1.key_press == "down":
+        elif snake_1.key_press == "down": 
             snake_1.direction = [0,20]
         elif snake_1.key_press == "left":
             snake_1.direction = [-20,0]
@@ -79,17 +84,22 @@ def main():
             snake_1.direction = [20,0]  
 
         # situation check
-        snake_1.tail_collide_check
+        snake_1.tail_collide_check()
         if food_collide_check(snake_1, food_1):
             snake_1.grow()
             food_1.randomize()
             score += 1
 
+        if score >= 5:
+            display_game_over(background, font_obj, colors.red)
+
+        seconds = (pygame.time.get_ticks()-start_tick)/1000
+        seconds = round(seconds)
         background.fill(colors.orange)  
         display_score(background, font_obj, colors.black, score) 
+        display_time(background, font_obj, colors.white, seconds)
         snake_1.draw()
-        #food_1.draw()
-        pygame.draw.rect(background, colors.red, pygame.Rect(food_1.pos_x, food_1.pos_y, food_1.size, food_1.size))            
+        food_1.draw()        
         pygame.display.update()
 
 if __name__ == '__main__':
