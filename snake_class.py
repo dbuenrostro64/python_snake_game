@@ -15,7 +15,7 @@ class Snake:
                      Vector2(self.pos_x-40, self.pos_y)]
         self.block_size = 20
         self.velocity = 20
-        self.key_press = "none"
+        self.key_press = "right"
         self.direction = Vector2(20, 0)
         self.surface = surface
         self.has_eaten = False

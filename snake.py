@@ -60,7 +60,7 @@ def start_screen(surface, font):
         font.render_to(surface, (125, 400), "Press space to start", colors.black, None, size=50)
         pygame.display.update()
 
-def game_over(surface, font):
+def game_over(surface, font, score):
     """Draws game over when triggered """
     end = True
     while end:
@@ -73,7 +73,9 @@ def game_over(surface, font):
                     pygame.quit()
                     sys.exit()
         surface.fill(colors.orange)
-        font.render_to(surface, (150, 100), "GAME OVER", colors.red, None, size=100)
+        str_score=str(score)
+        font.render_to(surface, (125, 100), "GAME OVER", colors.red, None, size=100)
+        font.render_to(surface, (175, 450), "Score: "+str_score, colors.red, None, size=100)
         pygame.display.update()
 
 def main():
@@ -127,14 +129,18 @@ def main():
 
         # situation check
         if snake_1.tail_collide_check():
-            game_over(background, font_obj)
+            game_over(background, font_obj, score)
+        if snake_1.body[0].x < 0 or snake_1.body[0].x > WINDOW_WIDTH:
+            game_over(background, font_obj, score)
+        if snake_1.body[0].y < 0 or snake_1.body[0].y > WINDOW_HEIGHT:
+            game_over(background, font_obj, score)       
         if food_collide_check(snake_1, food_1):
             snake_1.grow()
             food_1.randomize()
             score += 1
 
         if score >= 5:
-            game_over(background, font_obj)
+            game_over(background, font_obj, score)
 
         seconds = (pygame.time.get_ticks()-start_tick)/1000
         seconds = round(seconds)
