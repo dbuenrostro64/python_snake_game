@@ -19,6 +19,8 @@ from pygame.locals import *
 import colors
 import snake_class
 import food_class
+import scenes_class
+import leaderboard
 
 
 def food_collide_check(snake, food):
@@ -60,10 +62,44 @@ def start_screen(surface, font):
         font.render_to(surface, (125, 400), "Press space to start", colors.black, None, size=50)
         pygame.display.update()
 
-def game_over(surface, font, score):
+def rules_screen(surface, font):
+    """Displays game rules before game """
+    pass
+
+def game_over(surface, font, score, high_scores):
     """Draws game over when triggered """
-    end = True
-    while end:
+    high_scores.append(score)
+    leaderboard.save_scores(high_scores)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    leaderboard_screen(surface, font, score, high_scores)
+        surface.fill(colors.black)
+        str_score=str(score)
+        font.render_to(surface, (125, 100), "GAME OVER", colors.red, None, size=100)
+        font.render_to(surface, (175, 425), "Score: "+str_score, colors.red, None, size=100)
+        pygame.display.update()
+
+def leaderboard_screen(surface, font, score, high_scores):
+    surface.fill(colors.black)
+    str_score=str(score)
+    font.render_to(surface, (225, 50), "HIGH SCORES", colors.purple, None, size=50)
+    font.render_to(surface, (150, 125), "NAME", colors.purple, None, size=25)
+    font.render_to(surface, (550, 125), "SCORE", colors.purple, None, size=25)
+
+    high_scores.sort(reverse=True)
+    height = 175
+    for scr in high_scores:
+        scr_str=str(scr)
+        font.render_to(surface, (150, height), "Player" , colors.blue, None, size=25)
+        font.render_to(surface, (550, height), scr_str, colors.blue, None, size=25)
+        height += 30
+    pygame.display.update()
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -72,11 +108,6 @@ def game_over(surface, font, score):
                 if event.key == pygame.K_SPACE:
                     pygame.quit()
                     sys.exit()
-        surface.fill(colors.orange)
-        str_score=str(score)
-        font.render_to(surface, (125, 100), "GAME OVER", colors.red, None, size=100)
-        font.render_to(surface, (175, 450), "Score: "+str_score, colors.red, None, size=100)
-        pygame.display.update()
 
 def main():
     """Main game function """
@@ -91,10 +122,12 @@ def main():
     background = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     background.fill(colors.orange)
     font_obj = font_init()
+    play_again = True
 
     snake_1 = snake_class.Snake(WINDOW_SIZE, background)
     food_1 = food_class.Food(WINDOW_SIZE, background)
     score = 0
+    high_scores = leaderboard.load_scores()
 
     SCREEN_UPDATE = pygame.USEREVENT
     pygame.time.set_timer(SCREEN_UPDATE, 150)
@@ -129,18 +162,15 @@ def main():
 
         # situation check
         if snake_1.tail_collide_check():
-            game_over(background, font_obj, score)
+            play_again = game_over(background, font_obj, score, high_scores)
         if snake_1.body[0].x < 0 or snake_1.body[0].x > WINDOW_WIDTH:
-            game_over(background, font_obj, score)
+            play_again = game_over(background, font_obj, score, high_scores)
         if snake_1.body[0].y < 0 or snake_1.body[0].y > WINDOW_HEIGHT:
-            game_over(background, font_obj, score)       
+            play_again = game_over(background, font_obj, score, high_scores)       
         if food_collide_check(snake_1, food_1):
             snake_1.grow()
             food_1.randomize()
             score += 1
-
-        if score >= 5:
-            game_over(background, font_obj, score)
 
         seconds = (pygame.time.get_ticks()-start_tick)/1000
         seconds = round(seconds)
