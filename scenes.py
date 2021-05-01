@@ -16,12 +16,27 @@ def start_screen(surface, font):
                     start = False
         surface.fill(colors.purple)
         font.render_to(surface, (150, 100), "SNAKE GAME!!!", colors.green, None, size=75)
-        font.render_to(surface, (125, 400), "Press space to start", colors.green, None, size=50)
+        font.render_to(surface, (225, 450), "Press space", colors.green, None, size=50)
         pygame.display.update()
 
 def rules_screen(surface, font):
     """Displays game rules before game """
-    pass
+    start = True
+    while start:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    start = False
+        surface.fill(colors.purple)
+        font.render_to(surface, (200, 100), "Use arrow keys to move", colors.green, None, size=30)
+        font.render_to(surface, (100, 150), "Eat food to grow and increase score", colors.green, None, size=30)
+        font.render_to(surface, (200, 200), "Dont touch your own tail", colors.green, None, size=30)
+        font.render_to(surface, (125, 250), "Don't touch the edge of the screen", colors.green, None, size=30)
+        font.render_to(surface, (225, 500), "Press space to start", colors.green, None, size=30)
+        pygame.display.update()
 
 def game_over(surface, font, score, high_scores):
     """Draws game over when triggered """

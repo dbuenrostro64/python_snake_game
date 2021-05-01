@@ -66,12 +66,14 @@ def main():
     high_scores = leaderboard.load_scores()
 
     SCREEN_UPDATE = pygame.USEREVENT
+
+    scenes.start_screen(background, font_obj)
+    scenes.rules_screen(background, font_obj)
+
     pygame.time.set_timer(SCREEN_UPDATE, 150)
     seconds = 0
     start_tick = pygame.time.get_ticks()
-
-    scenes.start_screen(background, font_obj)
-
+    
     # main game loop
     while True:
         pygame.time.delay(25)
