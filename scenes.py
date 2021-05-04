@@ -40,12 +40,14 @@ def rules_screen(surface, font):
 
 def game_over(surface, font, score, high_scores):
     """Draws game over when triggered """
-    
+    play_again = False
     letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N',
                 'O','P','Q','R','S','T','U','V','W','X','Y','Z']
     letter_pos = 0
     name = ""
     while True:
+        if play_again == True:
+            return play_again
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -55,7 +57,7 @@ def game_over(surface, font, score, high_scores):
 
                     high_scores.append((name, score))
                     leaderboard.save_scores(high_scores)
-                    leaderboard_screen(surface, font, score, high_scores)
+                    play_again = leaderboard_screen(surface, font, score, high_scores)
                 elif event.key == pygame.K_RIGHT:
                     letter_pos += 1
                     if letter_pos == 26:
@@ -84,6 +86,9 @@ def leaderboard_screen(surface, font, score, high_scores):
     font.render_to(surface, (225, 50), "HIGH SCORES", colors.purple, None, size=50)
     font.render_to(surface, (150, 125), "NAME", colors.purple, None, size=25)
     font.render_to(surface, (550, 125), "SCORE", colors.purple, None, size=25)
+    font.render_to(surface, (100, 500), "(y) to play again", colors.purple, None, size=25)
+    font.render_to(surface, (550, 500), "(n) to exit", colors.purple, None, size=25)
+
 
     sorted_high_scores = sorted(high_scores, key = lambda x: x[1], reverse=True)
     height = 175
@@ -99,6 +104,9 @@ def leaderboard_screen(surface, font, score, high_scores):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_n:
                     pygame.quit()
                     sys.exit()
+                elif event.key == pygame.K_y:
+                    play_again = True
+                    return play_again

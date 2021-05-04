@@ -26,4 +26,4 @@ class Food:
     def draw(self):
         """Draws food rectange onto game screen """
         food_rect = pygame.Rect(self.pos_x, self.pos_y, self.size, self.size)
-        pygame.draw.rect(self.surface, colors.red, food_rect)
+        pygame.draw.rect(self.surface, colors.orange, food_rect)

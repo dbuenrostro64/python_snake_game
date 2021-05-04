@@ -9,6 +9,7 @@ class Snake:
     """Creates snake object controlled by the player"""
     def __init__(self, win_size, surface):
         self.color = colors.green
+        self.win_size = win_size
         self.pos_x = win_size[0]/2
         self.pos_y = win_size[1]/2
         self.body = [Vector2(self.pos_x, self.pos_y), Vector2(self.pos_x-20, self.pos_y),
@@ -69,3 +70,11 @@ class Snake:
             if block == self.body[0]:
                 return True
         return False
+
+    def reset(self):
+        self.pos_x = self.win_size[0]/2
+        self.pos_y = self.win_size[1]/2
+        self.body = [Vector2(self.pos_x, self.pos_y), Vector2(self.pos_x-20, self.pos_y),
+                     Vector2(self.pos_x-40, self.pos_y)]
+        self.key_press = "right"
+        self.direction = Vector2(20, 0)

@@ -101,15 +101,20 @@ def main():
         # situation check
         if snake_1.tail_collide_check():
             play_again = scenes.game_over(background, font_obj, score, high_scores)
+            snake_1.reset()
+            score = 0
         if snake_1.body[0].x < 0 or snake_1.body[0].x > WINDOW_WIDTH:
             play_again = scenes.game_over(background, font_obj, score, high_scores)
+            snake_1.reset()
+            score = 0
         if snake_1.body[0].y < 0 or snake_1.body[0].y > WINDOW_HEIGHT:
-            play_again = scenes.game_over(background, font_obj, score, high_scores)       
+            play_again = scenes.game_over(background, font_obj, score, high_scores)  
+            snake_1.reset()
+            score = 0     
         if food_collide_check(snake_1, food_1):
             snake_1.grow()
             food_1.randomize()
             score += 1
-
         seconds = (pygame.time.get_ticks()-start_tick)/1000
         seconds = round(seconds)
         background.fill(colors.blue)
