@@ -46,6 +46,12 @@ def display_time(surface, font, color, time):
     str_time = str(time)
     font.render_to(surface, (50, 25), "Time: " + str_time, color, None, size=32)
 
+def game_reset_init(snake, reset_time, score):
+    score = 0
+    snake.reset()
+    scenes.run_intro()
+    reset_time = pygame.time.get_ticks()
+
 def main():
     """Main game function """
     # window size
@@ -72,6 +78,7 @@ def main():
 
     pygame.time.set_timer(SCREEN_UPDATE, 150)
     seconds = 0
+    reset_time = 0
     start_tick = pygame.time.get_ticks()
     
     # main game loop
@@ -101,21 +108,18 @@ def main():
         # situation check
         if snake_1.tail_collide_check():
             play_again = scenes.game_over(background, font_obj, score, high_scores)
-            snake_1.reset()
-            score = 0
+            game_reset_init(snake_1, reset_time, score)
         if snake_1.body[0].x < 0 or snake_1.body[0].x > WINDOW_WIDTH:
             play_again = scenes.game_over(background, font_obj, score, high_scores)
-            snake_1.reset()
-            score = 0
+            game_reset_init(snake_1, reset_time, score)
         if snake_1.body[0].y < 0 or snake_1.body[0].y > WINDOW_HEIGHT:
             play_again = scenes.game_over(background, font_obj, score, high_scores)  
-            snake_1.reset()
-            score = 0     
+            game_reset_init(snake_1, reset_time, score)
         if food_collide_check(snake_1, food_1):
             snake_1.grow()
             food_1.randomize()
             score += 1
-        seconds = (pygame.time.get_ticks()-start_tick)/1000
+        seconds = (pygame.time.get_ticks()-start_tick-reset_time)/1000
         seconds = round(seconds)
         background.fill(colors.blue)
         display_score(background, font_obj, colors.black, score)

@@ -38,6 +38,10 @@ def rules_screen(surface, font):
         font.render_to(surface, (225, 500), "Press space to start", colors.green, None, size=30)
         pygame.display.update()
 
+def run_intro(surface, font):
+    start_screen(surface, font)
+    rules_screen(surface, font)
+
 def game_over(surface, font, score, high_scores):
     """Draws game over when triggered """
     play_again = False
