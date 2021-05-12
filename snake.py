@@ -46,11 +46,11 @@ def display_time(surface, font, color, time):
     str_time = str(time)
     font.render_to(surface, (50, 25), "Time: " + str_time, color, None, size=32)
 
-def game_reset_init(snake, reset_time, score):
-    score = 0
+def game_reset_init(surface, font, snake, reset_time, score):
     snake.reset()
-    scenes.run_intro()
+    scenes.run_intro(surface, font)
     reset_time = pygame.time.get_ticks()
+    return reset_time
 
 def main():
     """Main game function """
@@ -70,6 +70,7 @@ def main():
     food_1 = food_class.Food(WINDOW_SIZE, background)
     score = 0
     high_scores = leaderboard.load_scores()
+    print(high_scores)
 
     SCREEN_UPDATE = pygame.USEREVENT
 
@@ -108,19 +109,24 @@ def main():
         # situation check
         if snake_1.tail_collide_check():
             play_again = scenes.game_over(background, font_obj, score, high_scores)
-            game_reset_init(snake_1, reset_time, score)
+            reset_time = game_reset_init(background, font_obj, snake_1, reset_time, score)
+            score = 0
         if snake_1.body[0].x < 0 or snake_1.body[0].x > WINDOW_WIDTH:
             play_again = scenes.game_over(background, font_obj, score, high_scores)
-            game_reset_init(snake_1, reset_time, score)
+            reset_time = game_reset_init(background, font_obj, snake_1, reset_time, score)
+            score = 0
         if snake_1.body[0].y < 0 or snake_1.body[0].y > WINDOW_HEIGHT:
             play_again = scenes.game_over(background, font_obj, score, high_scores)  
-            game_reset_init(snake_1, reset_time, score)
+            reset_time = game_reset_init(background, font_obj, snake_1, reset_time, score)
+            score = 0
         if food_collide_check(snake_1, food_1):
             snake_1.grow()
             food_1.randomize()
             score += 1
-        seconds = (pygame.time.get_ticks()-start_tick-reset_time)/1000
+        seconds = ((pygame.time.get_ticks()-start_tick)-reset_time)/1000
         seconds = round(seconds)
+        if seconds == -1 or seconds == -2:
+            seconds = 0
         background.fill(colors.blue)
         display_score(background, font_obj, colors.black, score)
         display_time(background, font_obj, colors.white, seconds)
